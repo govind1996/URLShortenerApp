@@ -30,7 +30,7 @@ Link to download Visual studio code: - https://code.visualstudio.com/download
 3. EntityFramework
 4. Swashbuckle.AspNetCore
 
-### External packages which are used in Angular Project
+### External packages which are used in React Project
 1. @material-ui
 2. react-redux
 3. moment
