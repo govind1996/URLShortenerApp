@@ -1,0 +1,19 @@
+.shortenForm {
+	display: flex;
+	justify-content: center;
+	text-align: center;
+}
+.inputUrl {
+	min-width: 50%;
+	position: absolute;
+	top: 30%;
+	// margin-top: 10%;
+}
+.shortenContainer {
+	padding-top: 1rem !important;
+	width: 70%;
+}
+
+.responseBody {
+	color: black;
+}
