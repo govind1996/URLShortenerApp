@@ -14,7 +14,7 @@ This project has two parts
 ### About Platform Used 
 
 ### Microsoft Visual Studio Community 2019<br>
-Link to download Microsoft Visual Studio Community 2017: - https://visualstudio.microsoft.com/vs/ 
+Link to download Microsoft Visual Studio Community 2019: - https://visualstudio.microsoft.com/vs/ 
 
 ### Microsoft SQL Server 2018<br>
 Link to download SQL Server Express: - https://www.microsoft.com/en-in/download/
@@ -38,19 +38,19 @@ Link to download Visual studio code: - https://code.visualstudio.com/download
 
 ### How To Run Both Projects side by side.
 1. First of all Clone repository to your local machine which have two project.
-1.1. Setting Up Database
-1.1.1. Open UrlShortnerDbContext.cs file and add connection string of Database
-1.1.2. Open cmd in DAL folder and run following commands
+2. Setting Up Database
+   - Open UrlShortnerDbContext.cs file and add connection string of Database
+   - Open cmd in DAL folder and run following commands
        - dotnet tool install --global dotnet-ef
        - dotnet ef database update
-2.1. Running URLShortenerApi
-2.1.1 Open cmd and CD to URLShortenerApi folder and run following command
+3. Running URLShortenerApi
+   - Open cmd and CD to URLShortenerApi folder and run following command
        - dotnet run
-3.1. Running Shortify (UI)
-3.1.1 Open cmd and CD to shortify folder and run following command
+4. Running Shortify (UI)
+   - Open cmd and CD to shortify folder and run following command
        - dotnet run
 - visit https://localhost:44364/swagger for URLShortnerApi Swagger Documentation
-- visit https://localhost:44322/ for the Shortify Application
+- visit https://localhost:44322/ for the Shortify UI Application
 
 ## Note : Run Visual studio, Visual Studio Code or Command Prompt as Administrator in windows system to avoide some issue.
 
