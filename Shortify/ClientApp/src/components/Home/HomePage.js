@@ -9,7 +9,7 @@ const HomePage = () => {
 			<Container style={{ textAlign: "center" }}>
 				<h1>Welcome to Shortify</h1>
 				<h4>
-					A URL shortener application created using React and ASP.NET
+					An URL shortener application created using React and ASP.NET
 					Core
 				</h4>
 			</Container>
