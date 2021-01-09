@@ -3,7 +3,7 @@
 
 
 
-## Getting Started
+## About Project
 
 This project has two parts
 
@@ -11,7 +11,7 @@ This project has two parts
 2.	Shortify: A React UI app to consume the URLShortenerAPI
 
 
-### About Platform Used 
+## About Platform Used 
 
 ### Microsoft Visual Studio Community 2019<br>
 Link to download Microsoft Visual Studio Community 2019: - https://visualstudio.microsoft.com/vs/ 
@@ -21,6 +21,8 @@ Link to download SQL Server Express: - https://www.microsoft.com/en-in/download/
 
 ### Visual Studio Code<br>
 Link to download Visual studio code: - https://code.visualstudio.com/download 
+
+## Depenedencies
 
 ### External packages which are used in .Net Core Project
 1. JWT Token for Authentication of APIS
@@ -36,7 +38,8 @@ Link to download Visual studio code: - https://code.visualstudio.com/download
 5. redux-thunk
 6. axios
 
-### How To Run Both Projects side by side.
+## How To Run Both Projects side by side
+
 1. First of all Clone repository to your local machine which have two project.
 2. Setting Up Database
    - Open UrlShortnerDbContext.cs file and add connection string of Database
