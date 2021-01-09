@@ -1,7 +1,7 @@
 
 # URL Shortener Project Created using React and ASP.NET CORE APIS
 
-
+![](demo.gif)
 
 ## About Project
 
