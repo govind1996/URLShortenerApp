@@ -47,9 +47,13 @@ Link to download Visual studio code: - https://code.visualstudio.com/download
        - dotnet tool install --global dotnet-ef
        - dotnet ef database update
 3. Running URLShortenerApi
-   - Open cmd and CD to URLShortenerApi folder and run following command
+   - Open appsettings.json and add connection string
+   - Open cmd and CD to URLShortenerApi folder and run following command to run Api service
        - dotnet run
+   - To run tests use
+       - dotnet test
 4. Running Shortify (UI)
+   - Open appsettings.json and add connection string
    - Open cmd and CD to shortify folder and run following command
        - dotnet run
 - visit https://localhost:44364/swagger for URLShortnerApi Swagger Documentation
