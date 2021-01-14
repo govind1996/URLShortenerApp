@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -33,7 +34,8 @@ namespace shortify
             services.AddControllersWithViews();
             services.AddHttpClient();
             services.AddTransient<DbDataSeeder>();
-            services.AddDbContext<UrlShortnerDbContext>();
+            services.AddDbContext<UrlShortnerDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("UrlShortenerContext")));
 
             //disabling auto 400 response for invalid modelstate
             services.Configure<ApiBehaviorOptions>(options =>

@@ -1,6 +1,14 @@
 import React from "react";
 import { Redirect } from "react-router-dom";
-import { Button, Container, Form, FormGroup, Label, Input } from "reactstrap";
+import {
+	Button,
+	Container,
+	Form,
+	FormGroup,
+	Label,
+	Input,
+	FormFeedback,
+} from "reactstrap";
 import "../../styles/style.scss";
 import {
 	validateEmail,
@@ -200,6 +208,13 @@ class RegisterForm extends React.Component {
 									!this.state.password.isValid
 								}
 							/>
+							<FormFeedback>
+								"Passwords must be at least 6 characters."
+								<br />
+								"Passwords must have at least one non
+								alphanumeric character , one lowercase character
+								, one uppercase character and one digit"
+							</FormFeedback>
 						</FormGroup>
 						<FormGroup row>
 							<Label for="confirmPassword" size="sm">
@@ -218,6 +233,9 @@ class RegisterForm extends React.Component {
 									!this.state.confirmPassword.isValid
 								}
 							/>
+							<FormFeedback>
+								"Password and Confirm Password should match"
+							</FormFeedback>
 						</FormGroup>
 						<FormGroup row>
 							<Button outline color="success" size="lg" block>

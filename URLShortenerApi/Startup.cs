@@ -21,6 +21,8 @@ using System.Text;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
+using URLShortenerApi.Helpers;
 
 namespace URLShortner
 {
@@ -43,6 +45,7 @@ namespace URLShortner
             services.AddHttpClient();
             services.AddMvc();
             services.AddScoped<IShortenerService, ShortenerService>();
+            services.AddScoped<IURLHelper, URLHelper>();
             services.AddSwaggerGen(x =>
             {
                 var xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
@@ -69,7 +72,8 @@ namespace URLShortner
                 ValidateAudience = false,
                 IssuerSigningKey = SignInKey
             };
-            services.AddDbContext<UrlShortnerDbContext>();
+            services.AddDbContext<UrlShortnerDbContext>(options =>
+            options.UseSqlServer(Configuration.GetConnectionString("UrlShortenerContext")));
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>

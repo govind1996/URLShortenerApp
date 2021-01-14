@@ -9,6 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using URLShortenerApi.Helpers;
 using URLShortner.Dtos;
 using URLShortner.Mapper;
 
@@ -20,15 +21,17 @@ namespace URLShortner.Code
         private readonly UrlShortnerDbContext _dbContext;
         private readonly IConfiguration _config;
         private readonly IHttpClientFactory _clientFactory;
-        public ShortenerService(UrlShortnerDbContext dbContext, IConfiguration config, IHttpClientFactory clientFactory)
+        private readonly IURLHelper _helper;
+        public ShortenerService(UrlShortnerDbContext dbContext, IConfiguration config, IHttpClientFactory clientFactory, IURLHelper helper)
         {
             _dbContext = dbContext;
             _config = config;
             _clientFactory = clientFactory;
+            _helper = helper;
         }
         public async Task<OrignalUrlResponse> OrignalURL(string Url)
         {
-            var Key = await Decode(Url);
+            var Key = await _helper.Decode(Url);
             UrlInfo urlInfo = new UrlInfo();
             try
             {
@@ -36,7 +39,7 @@ namespace URLShortner.Code
                 if (urlInfo == null)
                 {
                     //TODO Add to error list
-                    throw new ApiException("Invallid Input");
+                    throw new ApiException("Invalid Input");
                 }
                 urlInfo.Clicks += 1;
                 urlInfo.LastClicked = DateTime.Now;
@@ -44,7 +47,10 @@ namespace URLShortner.Code
             }
             catch (Exception ex)
             {
-                throw (ex);
+                return new OrignalUrlResponse
+                {
+                    Message = ex.Message
+                };
             }
             
             var response = UrlMapper.MapUrlInfoToOrignalUrlResponse(urlInfo);
@@ -55,17 +61,20 @@ namespace URLShortner.Code
         {
             int Id = await SaveToDbAndGetKey(input);
             input.Key = Id + 1000000;
-            input.UrlHash = await Encode(input.Key);
-            input.Title = await GetTitle(input.Url);
+            input.UrlHash = await _helper.Encode(input.Key);
+            input.Title = await _helper.GetTitle(input.Url);
             //TODO research about date time
             input.CreatedAt = DateTime.Now;
             try
             {
                 await _dbContext.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw (ex);
+                return new ShortenUrlResponse
+                {
+                    Message = "Unable to save to Db"
+                };
             }
             var response = UrlMapper.MapUrlInfoToShortenUrlResponse(input);
             return response;
@@ -93,10 +102,10 @@ namespace URLShortner.Code
                 }
                 response.UrlList = UrlList;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw ex; 
+                response.Error = "Unable to fetch";
             }
             return response;
         }
@@ -121,42 +130,14 @@ namespace URLShortner.Code
                 }
                 
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                response.Message = "failed to fetch from DB";
+                response.Message = "Failed to fetch from DB";
                 return response;
             }
 
             response.Message = "Delete Success";
             return response;
-        }
-        /// <summary>
-        /// Encodes an integer to unique string
-        /// </summary>
-        /// <param name="Key"></param>
-        /// <returns></returns>
-        private async Task<string> Encode(int Key)
-        {
-            string IntToChar = _config["IntToChar"];
-            StringBuilder UrlHash = new StringBuilder();
-            while(Key!=0)
-            {
-                UrlHash.Insert(0,IntToChar[Key % 52]);
-                Key = Key / 52;
-            }
-            return UrlHash.ToString();
-        }
-        private async Task<int> Decode(string Url)
-        {
-            int Key = 0;
-            for(int i=0;i<Url.Length;i++)
-            {
-                if (Url[i] >= 'a' && Url[i] <= 'z')
-                    Key = Key * 52 + (Url[i] - 'a');
-                else
-                    Key = Key * 52 + (26 + Url[i] - 'A');
-            }
-            return Key;
         }
         private async Task<int> SaveToDbAndGetKey(UrlInfo input)
         {
@@ -165,35 +146,14 @@ namespace URLShortner.Code
                 _dbContext.Urls.Add(input);
                 await _dbContext.SaveChangesAsync();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                throw(ex);
+                
             }
             return input.Id;
 
         }
-        private async Task<string> GetTitle(string url)
-        {
-            try
-            {
-                var uri = new Uri(url);
-                var baseUri = uri.GetLeftPart(System.UriPartial.Authority).ToString();
-                var request = new HttpRequestMessage(HttpMethod.Get, "https://textance.herokuapp.com/title/" + baseUri);
-                var client = _clientFactory.CreateClient();
-                var response = await client.SendAsync(request);
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    var responseStream = await response.Content.ReadAsStringAsync();
-                    return responseStream;
-                }
-            }
-            catch (Exception ex)
-            {
-
-                return "No Title";
-            }
-            return "No Title";
-        }
+        
     }
 }
