@@ -33,10 +33,10 @@ namespace shortify
 
             services.AddControllersWithViews();
             services.AddHttpClient();
-            services.AddTransient<DbDataSeeder>();
+            
             services.AddDbContext<UrlShortnerDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("UrlShortenerContext")));
-
+            services.AddTransient<DbDataSeeder>();
             //disabling auto 400 response for invalid modelstate
             services.Configure<ApiBehaviorOptions>(options =>
             {

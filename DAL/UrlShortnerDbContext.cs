@@ -21,8 +21,12 @@ namespace DAL
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
-            //add connection string here
-            //optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-T9571MCS\SQLEXPRESS;Initial Catalog=UrlShortenerDB;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False");
+            
+            if(!optionsBuilder.IsConfigured)
+            {
+                //add connection string here
+                optionsBuilder.UseSqlServer(@"Add-connection-string-here");
+            }
         }
         public DbSet<UrlInfo> Urls { get; set; }
     }
