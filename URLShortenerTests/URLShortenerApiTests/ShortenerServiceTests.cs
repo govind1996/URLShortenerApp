@@ -91,6 +91,28 @@ namespace URLShortenerTests
             Assert.IsNotNull(resp.UrlList[1]);
         }
         #endregion
+        #region DeleteUrlById
+        [TestMethod]
+        public async Task DeleteUrlById_Success()
+        {
+            var input = GetDeleteUrlInput();
+
+            var resp = await _service.DeleteUrlById(input);
+
+            Assert.IsNotNull(resp);
+            Assert.AreEqual(resp.Message, "Delete Success");
+        }
+        [TestMethod]
+        public async Task DeleteUrlById_URLNotFound()
+        {
+            var input = GetDeleteUrlInput();
+            input.UrlId = 11;
+            var resp = await _service.DeleteUrlById(input);
+
+            Assert.IsNotNull(resp);
+            Assert.AreEqual(resp.Message, "No url found to delete");
+        }
+        #endregion
         #region Private Methods
         private static OrignalUrlResponse GetOrignalUrlResponse()
         {
@@ -104,6 +126,14 @@ namespace URLShortenerTests
                     Clicks = 1,
                     Title = "Youtube"
                 }
+            };
+        }
+        private static DeleteUrlInput GetDeleteUrlInput()
+        {
+            return new DeleteUrlInput()
+            {
+                UrlId = 2,
+                UserId = "9b495ebe-045f-494f-b813-17b363f4a859"
             };
         }
         private static UrlInfo GetShortenUrlInput()

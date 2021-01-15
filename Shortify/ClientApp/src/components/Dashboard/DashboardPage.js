@@ -16,6 +16,9 @@ class DashboardPage extends React.Component {
 			id: -1,
 		};
 	}
+	componentDidMount() {
+		this.props.setLinksDispatch(this.props.token);
+	}
 	handleDelete = (event, id, index) => {
 		this.setState({
 			clicked: true,
@@ -62,8 +65,6 @@ class DashboardPage extends React.Component {
 		);
 		if (!this.props.isAuthorized) {
 			return <Redirect to="/app/login" />;
-		} else {
-			this.props.setLinksDispatch(this.props.token);
 		}
 		return dashboard;
 	}
