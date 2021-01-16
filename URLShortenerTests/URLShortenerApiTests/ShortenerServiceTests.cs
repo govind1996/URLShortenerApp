@@ -16,11 +16,12 @@ namespace URLShortenerTests
     [TestClass]
     public class ShortenerServiceTests
     {
-        private  UrlShortnerDbContext _dbContext;
+        
         private  IConfiguration _config;
         private  IHttpClientFactory _clientFactory;
         private IURLHelper _helper;
         private ShortenerService _service;
+        private UrlShortnerDbContext dbContext;
         [TestInitialize]
         public void init()
         {
@@ -28,89 +29,153 @@ namespace URLShortenerTests
             _config = Substitute.For<IConfiguration>();
             _clientFactory = Substitute.For<IHttpClientFactory>();
             _helper = Substitute.For<IURLHelper>();
-            _dbContext = TestDbContext<UrlShortnerDbContext>.GetContext(_dbContext);
-            _dbContext = TestDbSeeder.SeedData(_dbContext);
-            _service = new ShortenerService(_dbContext, _config, _clientFactory, _helper);
+            dbContext = new UrlShortnerDbContext(TestDbContext.GetOptions());
         }
         #region OrignalUrl
         [TestMethod]
         public async Task OrignalUrl_Success()
         {
-            string input = "hfRa";
-            _helper.Decode(Arg.Any<string>()).Returns(1000012);
+            DeleteDatabase();
+            using(var _dbContext = dbContext)
+            {
+                var TestData = GetTestData();
+                foreach (var Data in TestData)
+                    _dbContext.Urls.Add(Data);
+                _dbContext.SaveChanges();
+                _service = new ShortenerService(_dbContext, _config, _clientFactory, _helper);
+                string input = "hfRa";
+                _helper.Decode(Arg.Any<string>()).Returns(1000012);
 
-            var resp = await _service.OrignalURL(input);
+                var resp = await _service.OrignalURL(input);
 
-            Assert.IsNotNull(resp);
-            Assert.IsNull(resp.Message);
-            Assert.IsNotNull(resp.Url);
-            Assert.AreEqual(resp.Url.ShortUrl, input);
+                Assert.IsNotNull(resp);
+                Assert.IsNull(resp.Message);
+                Assert.IsNotNull(resp.Url);
+                Assert.AreEqual(resp.Url.ShortUrl, input);
+            }
+            
+            
         }
         [TestMethod]
         public async Task OrignalUrl_InvalidInput()
         {
-            string input = "a";
-            _helper.Decode(Arg.Any<string>()).Returns(1000001);
+            DeleteDatabase();
+            using (var _dbContext = dbContext)
+            {
+                var TestData = GetTestData();
+                foreach (var Data in TestData)
+                    _dbContext.Urls.Add(Data);
+                _dbContext.SaveChanges();
+                _service = new ShortenerService(_dbContext, _config, _clientFactory, _helper);
 
-            var resp = await _service.OrignalURL(input);
+                string input = "a";
+                _helper.Decode(Arg.Any<string>()).Returns(1000001);
 
-            Assert.IsNotNull(resp);
-            Assert.IsNull(resp.Url);
-            Assert.IsNotNull(resp.Message);
-            Assert.AreEqual(resp.Message, "Invalid Input");
+                var resp = await _service.OrignalURL(input);
+
+                Assert.IsNotNull(resp);
+                Assert.IsNull(resp.Url);
+                Assert.IsNotNull(resp.Message);
+                Assert.AreEqual(resp.Message, "Invalid Input");
+            }
+            
         }
         #endregion
         #region ShortenUrl
         [TestMethod]
         public async Task ShortenUrl_Success()
         {
-            var input = GetShortenUrlInput();
-            _helper.Encode(Arg.Any<int>()).Returns("hfRd");
-            _helper.GetTitle(Arg.Any<string>()).Returns("Gmail");
+            DeleteDatabase();
+            using (var _dbContext = dbContext)
+            {
+                var TestData = GetTestData();
+                foreach (var Data in TestData)
+                    _dbContext.Urls.Add(Data);
+                _dbContext.SaveChanges();
+                _service = new ShortenerService(_dbContext, _config, _clientFactory, _helper);
 
-            var resp = await _service.ShortenURL(input);
+                var input = GetShortenUrlInput();
+                _helper.Encode(Arg.Any<int>()).Returns("hfRd");
+                _helper.GetTitle(Arg.Any<string>()).Returns("Gmail");
 
-            Assert.IsNotNull(resp);
-            Assert.IsNull(resp.Message);
-            Assert.IsNotNull(resp.Url);
-            Assert.AreEqual(resp.Url.OrignalUrl, input.Url);
+                var resp = await _service.ShortenURL(input);
+
+                Assert.IsNotNull(resp);
+                Assert.IsNull(resp.Message);
+                Assert.IsNotNull(resp.Url);
+                Assert.AreEqual(resp.Url.OrignalUrl, input.Url);
+            }
+            
         }
         #endregion
         #region GetUrlListById
         [TestMethod]
         public async Task GetUrlListById_Success()
         {
-            var input = "9b495ebe-045f-494f-b813-17b363f4a859";
+            DeleteDatabase();
+            using (var _dbContext = dbContext)
+            {
+                var TestData = GetTestData();
+                foreach (var Data in TestData)
+                    _dbContext.Urls.Add(Data);
+                _dbContext.SaveChanges();
+                _service = new ShortenerService(_dbContext, _config, _clientFactory, _helper);
 
-            var resp = await _service.GetUrlListById(input);
+                var input = "9b495ebe-045f-494f-b813-17b363f4a859";
 
-            Assert.IsNotNull(resp);
-            Assert.IsNull(resp.Error);
-            Assert.AreEqual(resp.UrlList.Count,2);
-            Assert.IsNotNull(resp.UrlList[0]);
-            Assert.IsNotNull(resp.UrlList[1]);
+                var resp = await _service.GetUrlListById(input);
+
+                Assert.IsNotNull(resp);
+                Assert.IsNull(resp.Error);
+                Assert.AreEqual(resp.UrlList.Count, 2);
+                Assert.IsNotNull(resp.UrlList[0]);
+                Assert.IsNotNull(resp.UrlList[1]);
+            }
+            
         }
         #endregion
         #region DeleteUrlById
         [TestMethod]
         public async Task DeleteUrlById_Success()
         {
-            var input = GetDeleteUrlInput();
+            DeleteDatabase();
+            using (var _dbContext = dbContext)
+            {
+                var TestData = GetTestData();
+                foreach (var Data in TestData)
+                    _dbContext.Urls.Add(Data);
+                _dbContext.SaveChanges();
+                _service = new ShortenerService(_dbContext, _config, _clientFactory, _helper);
 
-            var resp = await _service.DeleteUrlById(input);
+                var input = GetDeleteUrlInput();
 
-            Assert.IsNotNull(resp);
-            Assert.AreEqual(resp.Message, "Delete Success");
+                var resp = await _service.DeleteUrlById(input);
+
+                Assert.IsNotNull(resp);
+                Assert.AreEqual(resp.Message, "Delete Success");
+            }
+            
         }
         [TestMethod]
         public async Task DeleteUrlById_URLNotFound()
         {
-            var input = GetDeleteUrlInput();
-            input.UrlId = 11;
-            var resp = await _service.DeleteUrlById(input);
+            DeleteDatabase();
+            using (var _dbContext = dbContext)
+            {
+                var TestData = GetTestData();
+                foreach (var Data in TestData)
+                    _dbContext.Urls.Add(Data);
+                _dbContext.SaveChanges();
+                _service = new ShortenerService(_dbContext, _config, _clientFactory, _helper);
 
-            Assert.IsNotNull(resp);
-            Assert.AreEqual(resp.Message, "No url found to delete");
+                var input = GetDeleteUrlInput();
+                input.UrlId = 11;
+                var resp = await _service.DeleteUrlById(input);
+
+                Assert.IsNotNull(resp);
+                Assert.AreEqual(resp.Message, "No url found to delete");
+            }
+            
         }
         #endregion
         #region Private Methods
@@ -143,6 +208,37 @@ namespace URLShortenerTests
                 Url = "https://youtube.com",
                 UserId = "9b495ebe-045f-494f-b813-17b363f4a859"
             };
+        }
+        private static List<UrlInfo> GetTestData()
+        {
+            return new List<UrlInfo>
+            {
+                new UrlInfo 
+                { 
+                    Id = 2, 
+                    Key = 1000012, 
+                    Url = "https://youtube.com", 
+                    UrlHash = "hfRa", 
+                    UserId = "9b495ebe-045f-494f-b813-17b363f4a859", 
+                    Clicks = 0, 
+                    Title = "Youtube" 
+                },
+                new UrlInfo 
+                { 
+                    Id = 4, 
+                    Key = 1000014, 
+                    Url = "https://google.com", 
+                    UrlHash = "hfRc", 
+                    UserId = "9b495ebe-045f-494f-b813-17b363f4a859", 
+                    Clicks = 1, 
+                    Title = "Gmail"
+                }
+            };
+        }
+        private void DeleteDatabase()
+        {
+            dbContext.Database.EnsureDeleted();
+            return;
         }
         #endregion
     }

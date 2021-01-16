@@ -13,12 +13,10 @@ namespace URLShortenerApi.Helpers
 
     public class URLHelper : IURLHelper
     {
-        private readonly UrlShortnerDbContext _dbContext;
         private readonly IConfiguration _config;
         private readonly IHttpClientFactory _clientFactory;
-        public URLHelper(UrlShortnerDbContext dbContext, IConfiguration config, IHttpClientFactory clientFactory)
+        public URLHelper( IConfiguration config, IHttpClientFactory clientFactory)
         {
-            _dbContext = dbContext;
             _config = config;
             _clientFactory = clientFactory;
         }

@@ -23,7 +23,6 @@ namespace URLShortenerTests.URLShortenerApiTests
     [TestClass]
     public class URLHelperTests
     {
-        private UrlShortnerDbContext _dbContext;
         private IConfiguration _config;
         private IHttpClientFactory _clientFactory;
         private URLHelper _helper;
@@ -41,9 +40,8 @@ namespace URLShortenerTests.URLShortenerApiTests
                 .AddInMemoryCollection(fakeValues)
                 .Build();
             _clientFactory = Substitute.For<IHttpClientFactory>();
-            _dbContext = TestDbContext<UrlShortnerDbContext>.GetContext(_dbContext);
-            _dbContext = TestDbSeeder.SeedData(_dbContext);
-            _helper = new URLHelper(_dbContext, _config, _clientFactory);
+
+            _helper = new URLHelper( _config, _clientFactory);
         }
         #region OrignalUrl
         [TestMethod]
@@ -85,7 +83,7 @@ namespace URLShortenerTests.URLShortenerApiTests
             {
                 BaseAddress = new Uri("https://textance.herokuapp.com/title/https://github.com"),
             };
-            
+
 
             _clientFactory.CreateClient().Returns(httpClient);
 

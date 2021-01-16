@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DAL;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,16 +8,14 @@ using System.Threading.Tasks;
 
 namespace URLShortenerTests.Utils
 {
-    class TestDbContext<T> where T: DbContext
+    class TestDbContext
     {
-        public static T GetContext(T context)
+        public static DbContextOptions<UrlShortnerDbContext> GetOptions()
         {
-            DbContextOptions<T> options;
-            var builder = new DbContextOptionsBuilder<T>().UseInMemoryDatabase(Guid.NewGuid().ToString());
+            DbContextOptions<UrlShortnerDbContext> options;
+            var builder = new DbContextOptionsBuilder<UrlShortnerDbContext>().UseInMemoryDatabase("TestDb");
             options = builder.Options;
-            context = (T) Activator.CreateInstance(typeof(T),options);
-            context.SaveChanges();
-            return context;
+            return options;
         }
     }
 }
