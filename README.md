@@ -49,16 +49,18 @@ Link to download Visual studio code: - https://code.visualstudio.com/download
 3. Running URLShortenerApi
    - Open appsettings.json and add connection string
    - Open cmd and CD to URLShortenerApi folder and run following command to run Api service
+       - dotnet build
        - dotnet run
    - To run tests use
        - dotnet test
 4. Running Shortify (UI)
    - Open appsettings.json and add connection string
    - Open cmd and CD to shortify folder and run following command
+       - dotnet build
        - dotnet run
 - visit https://localhost:44364/swagger for URLShortnerApi Swagger Documentation
 - visit https://localhost:44322/ for the Shortify UI Application
 
-## Note : Run Visual studio, Visual Studio Code or Command Prompt as Administrator in windows system to avoide some issue.
+## Note : Run Visual studio, Visual Studio Code or Command Prompt as Administrator in windows system to avoid some issue.
 
 
